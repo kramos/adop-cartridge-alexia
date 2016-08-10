@@ -118,7 +118,7 @@ Install.with{
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		--workdir /jenkins_slave_home/$JOB_NAME \\
-            |		node
+            |		node \\
             |		npm install --save	
             |'''.stripMargin())
   }
@@ -168,7 +168,7 @@ lint.with{
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		--workdir /jenkins_slave_home/$JOB_NAME \\
-            |		node
+            |		node \\
             |		npm lint
             |'''.stripMargin())
   }
@@ -217,7 +217,7 @@ test.with{
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		--workdir /jenkins_slave_home/$JOB_NAME \\
-            |		node
+            |		node \\
             |		npm run test
             |'''.stripMargin())
   }
