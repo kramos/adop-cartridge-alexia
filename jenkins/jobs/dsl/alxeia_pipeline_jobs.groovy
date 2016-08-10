@@ -125,7 +125,7 @@ Install.with{
   publishers{
     archiveArtifacts("**/*")
     downstreamParameterized{
-      trigger(projectFolderName + "/Package_SQL"){
+      trigger(projectFolderName + "/Lint"){
         condition("UNSTABLE_OR_BETTER")
         parameters{
           predefinedProp("B",'${B}')
@@ -138,7 +138,7 @@ Install.with{
 
 
 lint.with{
-  description("This job will package the SQL for use in other environments")
+  description("This job will perform static code analysis")
   parameters{
     stringParam("B",'',"Parent build number")
     stringParam("PARENT_BUILD","Get_Code","Parent build name")
@@ -175,7 +175,7 @@ lint.with{
   publishers{
     archiveArtifacts("**/*zip")
     downstreamParameterized{
-      trigger(projectFolderName + "/ST_Deploy"){
+      trigger(projectFolderName + "/Test"){
         condition("UNSTABLE_OR_BETTER")
         parameters{
           predefinedProp("B",'${BUILD_NUMBER}')
@@ -204,7 +204,7 @@ test.with{
   }
   label("docker")
   steps {
-    copyArtifacts("Package_SQL") {
+    copyArtifacts("Lint") {
         buildSelector {
           buildNumber('${B}')
       }
@@ -220,17 +220,6 @@ test.with{
             |		node \\
             |		npm run test
             |'''.stripMargin())
-  }
-  publishers{
-    downstreamParameterized{
-      trigger(projectFolderName + "/Image_Test"){
-        condition("UNSTABLE_OR_BETTER")
-        parameters{
-          predefinedProp("B",'${B}')
-          predefinedProp("PARENT_BUILD", '${PARENT_BUILD}')
-        }
-      }
-    }
   }
 }
 
