@@ -169,7 +169,7 @@ lint.with{
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		--workdir /jenkins_slave_home/$JOB_NAME \\
             |		node \\
-            |		npm lint
+            |		npm run lint
             |'''.stripMargin())
   }
   publishers{
