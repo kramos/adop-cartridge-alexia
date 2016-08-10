@@ -105,7 +105,7 @@ Install.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Install') {
+    copyArtifacts('Get_Code') {
         buildSelector {
           buildNumber('${B}')
       }
@@ -155,7 +155,7 @@ lint.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Get_Code') {
+    copyArtifacts('Install') {
         buildSelector {
           buildNumber('${B}')
       }
