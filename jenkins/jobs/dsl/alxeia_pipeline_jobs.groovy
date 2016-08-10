@@ -91,7 +91,7 @@ Install.with{
   description("This job performs an npm install")
   parameters{
     stringParam("B",'',"Parent build number")
-    stringParam("PARENT_BUILD","Get_SQL","Parent build name")
+    stringParam("PARENT_BUILD","Get_Code","Parent build name")
   }
   environmentVariables {
       env('WORKSPACE_NAME',workspaceFolderName)
@@ -105,7 +105,7 @@ Install.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Get_SQL') {
+    copyArtifacts('Get_Code') {
         buildSelector {
           buildNumber('${B}')
       }
@@ -140,7 +140,7 @@ lint.with{
   description("This job will package the SQL for use in other environments")
   parameters{
     stringParam("B",'',"Parent build number")
-    stringParam("PARENT_BUILD","Get_SQL","Parent build name")
+    stringParam("PARENT_BUILD","Get_Code","Parent build name")
   }
   environmentVariables {
       env('WORKSPACE_NAME',workspaceFolderName)
@@ -154,7 +154,7 @@ lint.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Get_SQL') {
+    copyArtifacts('Get_Code') {
         buildSelector {
           buildNumber('${B}')
       }
@@ -188,7 +188,7 @@ test.with{
   description("When triggered this will deploy to the ST environment.")
   parameters{
     stringParam("B",'',"Parent build number")
-    stringParam("PARENT_BUILD","Get_SQL","Parent build name")
+    stringParam("PARENT_BUILD","Get_Code","Parent build name")
   }
   wrappers {
     preBuildCleanup()
