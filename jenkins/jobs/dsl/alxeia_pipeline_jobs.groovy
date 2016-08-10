@@ -8,7 +8,7 @@ def referenceAppGitUrl = "ssh://jenkins@gerrit:29418/${PROJECT_NAME}/" + referen
 
 // Jobs
 def getCode = freeStyleJob(projectFolderName + "/Get_Code")
-def Install = freeStyleJob(projectFolderName + "/Install")
+def install = freeStyleJob(projectFolderName + "/Install")
 def lint = freeStyleJob(projectFolderName + "/Lint")
 def test = freeStyleJob(projectFolderName + "/Test")
 
@@ -74,7 +74,6 @@ getCode.with{
             |'''.stripMargin())
   }
   publishers{
-    archiveArtifacts("**/*")
     downstreamParameterized{
       trigger(projectFolderName + "/Install"){
         condition("UNSTABLE_OR_BETTER")
@@ -87,7 +86,7 @@ getCode.with{
   }
 }
 
-Install.with{
+install.with{
   description("This job performs an npm install")
   parameters{
     stringParam("B",'',"Parent build number")
@@ -105,11 +104,6 @@ Install.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Get_Code') {
-        buildSelector {
-          buildNumber('${B}')
-      }
-    }
     shell('''set -x
             |echo Run an install 
             |
@@ -117,13 +111,12 @@ Install.with{
             |		--rm \\
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
-            |		--workdir /jenkins_slave_home/$JOB_NAME \\
+            |		--workdir /jenkins_slave_home/Get_Code \\
             |		node \\
             |		npm install --save	
             |'''.stripMargin())
   }
   publishers{
-    archiveArtifacts("**/*")
     downstreamParameterized{
       trigger(projectFolderName + "/Lint"){
         condition("UNSTABLE_OR_BETTER")
@@ -155,11 +148,6 @@ lint.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Install') {
-        buildSelector {
-          buildNumber('${B}')
-      }
-    }
     shell('''set -x
             |echo Run static code analysis 
             |
@@ -167,13 +155,12 @@ lint.with{
             |		--rm \\
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
-            |		--workdir /jenkins_slave_home/$JOB_NAME \\
+            |		--workdir /jenkins_slave_home/Get_Code \\
             |		node \\
             |		npm run lint
             |'''.stripMargin())
   }
   publishers{
-    archiveArtifacts("**/*zip")
     downstreamParameterized{
       trigger(projectFolderName + "/Test"){
         condition("UNSTABLE_OR_BETTER")
@@ -187,7 +174,7 @@ lint.with{
 }
 
 test.with{
-  description("When triggered this will deploy to the ST environment.")
+  description("When triggered this will run the tests.")
   parameters{
     stringParam("B",'',"Parent build number")
     stringParam("PARENT_BUILD","Get_Code","Parent build name")
@@ -204,11 +191,6 @@ test.with{
   }
   label("docker")
   steps {
-    copyArtifacts("Lint") {
-        buildSelector {
-          buildNumber('${B}')
-      }
-    }
     shell('''set -x
             |echo Run unit tests
             |
@@ -216,7 +198,7 @@ test.with{
             |		--rm \\
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
-            |		--workdir /jenkins_slave_home/$JOB_NAME \\
+            |		--workdir /jenkins_slave_home/Get_Code \\
             |		node \\
             |		npm run test
             |'''.stripMargin())
