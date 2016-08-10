@@ -114,7 +114,7 @@ Install.with{
             |echo Run an install 
             |
             |docker run \\
-            |		--rm 
+            |		--rm \\
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		node
@@ -163,7 +163,7 @@ lint.with{
             |echo Run an install 
             |
             |docker run \\
-            |		--rm 
+            |		--rm \\
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		node
@@ -211,7 +211,7 @@ test.with{
             |echo Run an install 
             |
             |docker run \\
-            |		--rm 
+            |		--rm \\
             |		-v /var/run/docker.sock:/var/run/docker.sock \\
             |		-v jenkins_slave_home:/jenkins_slave_home/ \\
             |		node
