@@ -105,7 +105,7 @@ Install.with{
   }
   label("docker")
   steps {
-    copyArtifacts('Get_Code') {
+    copyArtifacts('Install') {
         buildSelector {
           buildNumber('${B}')
       }
@@ -161,7 +161,7 @@ lint.with{
       }
     }
     shell('''set -x
-            |echo Run an install 
+            |echo Run static code analysis 
             |
             |docker run \\
             |		--rm \\
@@ -210,7 +210,7 @@ test.with{
       }
     }
     shell('''set -x
-            |echo Run an install 
+            |echo Run unit tests
             |
             |docker run \\
             |		--rm \\
